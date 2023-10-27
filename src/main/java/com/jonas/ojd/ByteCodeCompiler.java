@@ -15,7 +15,7 @@ public class ByteCodeCompiler {
 
     private final static Path ROOT;
 
-    private final JavaBin javaBin = new JavaBin(JavaBin.DEFAULT);
+    private final JavaBin javaBin = new JavaBin(JavaInstalls.DEFAULT);
 
     static {
         ROOT = Paths.get("target/ojd");

@@ -16,14 +16,12 @@ import java.nio.file.Paths;
 @Data
 public class JavaBin {
 
-    public final static String DEFAULT = "C:/Program Files/Java/jdk-17.0.2/";
-
     private final Path bin;
     private final Path javac;
     private final Path javap;
 
-    public JavaBin(String path) {
-        Path bin = Paths.get(path).resolve("bin");
+    public JavaBin(JavaInstall javaInstall) {
+        Path bin = Paths.get(javaInstall.path()).resolve("bin");
         this.bin = bin;
         this.javac = bin.resolve("javac.exe");
         this.javap = bin.resolve("javap.exe");
