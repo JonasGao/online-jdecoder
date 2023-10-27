@@ -11,7 +11,7 @@ import java.nio.file.Paths;
 
 @Component
 @Slf4j
-public class ByteCodeParser {
+public class ByteCodeCompiler {
 
     private final static Path ROOT;
 
@@ -28,7 +28,7 @@ public class ByteCodeParser {
         }
     }
 
-    public String parse(TempJavaFile tempJavaFile) throws IOException, InterruptedException {
+    public String compile(TempJavaFile tempJavaFile) throws IOException, InterruptedException {
         try {
             int i;
             String targetPathString = tempJavaFile.getFilePathString();

@@ -12,13 +12,13 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class ParserController {
 
-    private final ByteCodeParser byteCodeParser;
+    private final ByteCodeCompiler byteCodeCompiler;
 
     @PostMapping("/compile")
     public String compile(@RequestParam String mainClass, @RequestBody String codeBody) throws IOException {
         TempJavaFile tempJavaFile = TempJavaFile.create(mainClass, codeBody);
         try {
-            return byteCodeParser.parse(tempJavaFile);
+            return byteCodeCompiler.compile(tempJavaFile);
         } catch (InterruptedException e) {
             return "Interrupted";
         }
