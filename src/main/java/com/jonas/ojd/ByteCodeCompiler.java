@@ -13,22 +13,8 @@ import java.nio.file.Paths;
 @Slf4j
 public class ByteCodeCompiler {
 
-    private final static Path ROOT;
-
-    private final JavaBin javaBin = new JavaBin(JavaInstalls.DEFAULT);
-
-    static {
-        ROOT = Paths.get("target/ojd");
-        try {
-            Files.createDirectories(ROOT);
-        } catch (FileAlreadyExistsException e) {
-            log.info("Root dir already exists: {}", ROOT);
-        } catch (IOException e) {
-            throw new CreateCompileRootDirException(e);
-        }
-    }
-
-    public String compile(TempJavaFile tempJavaFile) throws IOException, InterruptedException {
+    public String compile(JavaInstall javaInstall, TempJavaFile tempJavaFile) throws IOException, InterruptedException {
+        JavaBin javaBin = new JavaBin(javaInstall);
         try {
             int i;
             String targetPathString = tempJavaFile.getFilePathString();
