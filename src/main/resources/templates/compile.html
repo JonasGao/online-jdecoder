@@ -19,24 +19,14 @@
             <span class="fs-4">JDecoder</span>
         </a>
     </header>
-    <form action="/compile" method="post">
-        <div class="mb-3">
-            <label for="javaInstallSelect" class="form-label">Java Installation</label>
-            <select class="form-select" aria-label="Java Install Select" id="javaInstallSelect"
-                    name="javaInstallSelect">
-                <option th:each="ins:${javaInstalls}" th:value="${ins.key()}" th:text="${ins.fullName()}"></option>
-            </select>
+    <div class="row">
+        <div class="col">
+            <pre><code th:text="${code}"></code></pre>
         </div>
-        <div class="mb-3">
-            <label for="mainClass" class="form-label">Main Class</label>
-            <input type="text" class="form-control" id="mainClass" name="mainClass">
+        <div class="col">
+            <pre><code th:text="${bytecode}"></code></pre>
         </div>
-        <div class="mb-3">
-            <label for="javaCode" class="form-label">Java Code</label>
-            <textarea class="form-control" id="javaCode" name="javaCode" rows="30"></textarea>
-        </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
-    </form>
+    </div>
 </div>
 <script src="/static/bootstrap.bundle.min.js"></script>
 </body>

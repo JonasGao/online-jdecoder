@@ -4,27 +4,32 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 
 @Controller
 @RequiredArgsConstructor
-public class ParserController {
+public class CompileController {
 
     private final ByteCodeCompiler byteCodeCompiler;
 
     @PostMapping("/compile")
     public String compile(@RequestParam String javaInstallSelect, @RequestParam String mainClass,
-                          @RequestParam String codeBody, Model model) throws IOException {
-        TempJavaFile tempJavaFile = TempJavaFile.create(mainClass, codeBody);
+                          @RequestParam String javaCode, Model model) throws IOException {
+        TempJavaFile tempJavaFile = TempJavaFile.create(mainClass, javaCode);
         JavaInstall javaInstall = JavaInstalls.get(javaInstallSelect);
+        String bytecode;
         try {
-            return byteCodeCompiler.compile(javaInstall, tempJavaFile);
+            bytecode = byteCodeCompiler.compile(javaInstall, tempJavaFile);
         } catch (InterruptedException e) {
-            return "Interrupted";
+            model.addAttribute("javaInstall", javaInstallSelect);
+            model.addAttribute("mainClass", mainClass);
+            model.addAttribute("javaCode", javaCode);
+            return "interrupted";
         }
+        model.addAttribute("bytecode", bytecode);
+        model.addAttribute("code", javaCode);
+        return "compile";
     }
 }
