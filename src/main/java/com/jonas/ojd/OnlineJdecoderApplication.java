@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class OnlineJdecoderApplication {
 
     public static void main(String[] args) {
+        JavaInstalls.load();
         SpringApplication.run(OnlineJdecoderApplication.class, args);
     }
 
