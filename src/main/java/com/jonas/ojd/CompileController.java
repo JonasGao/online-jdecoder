@@ -23,9 +23,6 @@ public class CompileController {
         try {
             bytecode = byteCodeCompiler.compile(javaInstall, tempJavaFile);
         } catch (InterruptedException e) {
-            model.addAttribute("javaInstall", javaInstallSelect);
-            model.addAttribute("mainClass", mainClass);
-            model.addAttribute("javaCode", javaCode);
             return "interrupted";
         }
         model.addAttribute("bytecode", bytecode);

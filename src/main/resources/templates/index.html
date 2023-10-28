@@ -19,7 +19,7 @@
             <span class="fs-4">JDecoder</span>
         </a>
     </header>
-    <form action="/compile" method="post">
+    <form action="/compile" method="post" name="compile">
         <div class="mb-3">
             <label for="javaInstallSelect" class="form-label">Java Installation</label>
             <select class="form-select" aria-label="Java Install Select" id="javaInstallSelect"
@@ -35,9 +35,24 @@
             <label for="javaCode" class="form-label">Java Code</label>
             <textarea class="form-control" id="javaCode" name="javaCode" rows="30"></textarea>
         </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="submit" class="btn btn-primary" onclick="saveForm()">Submit</button>
     </form>
 </div>
 <script src="/static/bootstrap.bundle.min.js"></script>
+<script>
+  function saveForm() {
+    let form = document.forms["compile"];
+    localStorage.setItem("form_javaInstallSelect_value", form.javaInstallSelect.value);
+    localStorage.setItem("form_mainClass_value", form.mainClass.value);
+    localStorage.setItem("form_javaCode_value", form.javaCode.value);
+  }
+
+  window.addEventListener("load", () => {
+    let form = document.forms["compile"];
+    form.javaInstallSelect.value = localStorage.getItem("form_javaInstallSelect_value");
+    form.mainClass.value = localStorage.getItem("form_mainClass_value");
+    form.javaCode.value = localStorage.getItem("form_javaCode_value");
+  })
+</script>
 </body>
 </html>
