@@ -11,6 +11,11 @@
         #javaCode {
             font-family: monospace;
         }
+
+        #editor {
+            width: 100%;
+            height: 100px;
+        }
     </style>
 </head>
 <body>
@@ -40,26 +45,36 @@
         </div>
         <div class="mb-3">
             <label for="javaCode" class="form-label">Java Code</label>
-            <textarea class="form-control" id="javaCode" name="javaCode" rows="18"></textarea>
+            <textarea class="form-control" id="javaCode" name="javaCode" rows="18" hidden="hidden"></textarea>
+            <div id="editor"></div>
         </div>
         <button type="submit" class="btn btn-primary" onclick="saveForm()">Submit</button>
     </form>
 </div>
 <script src="/static/bootstrap.bundle.min.js"></script>
+<script src="/static/ace.js" type="text/javascript" charset="utf-8"></script>
 <script>
-  function saveForm() {
-    let form = document.forms["compile"];
-    localStorage.setItem("form_javaInstallSelect_value", form.javaInstallSelect.value);
-    localStorage.setItem("form_mainClass_value", form.mainClass.value);
-    localStorage.setItem("form_javaCode_value", form.javaCode.value);
-  }
+  const editor = ace.edit("editor", {
+    mode: "ace/mode/java",
+    selectionStyle: "text"
+  });
+  editor.setTheme("ace/theme/monokai");
 
   window.addEventListener("load", () => {
     let form = document.forms["compile"];
     form.javaInstallSelect.value = localStorage.getItem("form_javaInstallSelect_value");
     form.mainClass.value = localStorage.getItem("form_mainClass_value");
     form.javaCode.value = localStorage.getItem("form_javaCode_value");
+    editor.setValue(form.javaCode.value);
   })
+
+  function saveForm() {
+    let form = document.forms["compile"];
+    localStorage.setItem("form_javaInstallSelect_value", form.javaInstallSelect.value);
+    localStorage.setItem("form_mainClass_value", form.mainClass.value);
+    form.javaCode.value = editor.getValue();
+    localStorage.setItem("form_javaCode_value", form.javaCode.value);
+  }
 </script>
 </body>
 </html>
