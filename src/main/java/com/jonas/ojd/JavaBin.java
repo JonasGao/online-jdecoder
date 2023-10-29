@@ -16,6 +16,10 @@ import java.nio.file.Paths;
 @Data
 public class JavaBin {
 
+    private final static boolean IS_WINDOWS = System.getProperty("os.name").toLowerCase().contains("win");
+    private final static String JAVAC = IS_WINDOWS ? "javac.exe" : "javac";
+    private final static String JAVAP = IS_WINDOWS ? "javap.exe" : "javap";
+
     private final Path bin;
     private final Path javac;
     private final Path javap;
@@ -23,8 +27,8 @@ public class JavaBin {
     public JavaBin(JavaInstall javaInstall) {
         Path bin = Paths.get(javaInstall.path()).resolve("bin");
         this.bin = bin;
-        this.javac = bin.resolve("javac.exe");
-        this.javap = bin.resolve("javap.exe");
+        this.javac = bin.resolve(JAVAC);
+        this.javap = bin.resolve(JAVAP);
     }
 
     public int compile(TempJavaFile javaFile) throws IOException, InterruptedException {
