@@ -1,7 +1,8 @@
 Online JDecoder
 ===============
 
-Online view java byte-code.
+Online view java byte-code. Put the java snippet, and get the byte-code online. 
+To help you learn java byte-code on everywhere.
 
 ```java
 public class Demo {
