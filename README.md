@@ -12,7 +12,7 @@ class Data {
         return this.message;
     }
 
-    public String setMessage(String message) {
+    public void setMessage(String message) {
         this.message = message;
     }
 }
