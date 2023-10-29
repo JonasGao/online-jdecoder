@@ -13,7 +13,7 @@ class Data {
     }
 
     public String setMessage(String message) {
-        this.message = message
+        this.message = message;
     }
 }
 
