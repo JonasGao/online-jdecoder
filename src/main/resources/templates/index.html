@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>JDecoder</title>
     <link href="/static/bootstrap.min.css" rel="stylesheet"/>
+    <style>
+        #javaInstallSelect,
+        #mainClass,
+        #javaCode {
+            font-family: monospace;
+        }
+    </style>
 </head>
 <body>
 <div class="container">
@@ -33,7 +40,7 @@
         </div>
         <div class="mb-3">
             <label for="javaCode" class="form-label">Java Code</label>
-            <textarea class="form-control" id="javaCode" name="javaCode" rows="30"></textarea>
+            <textarea class="form-control" id="javaCode" name="javaCode" rows="18"></textarea>
         </div>
         <button type="submit" class="btn btn-primary" onclick="saveForm()">Submit</button>
     </form>
