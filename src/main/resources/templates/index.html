@@ -39,6 +39,12 @@
                 <option th:each="ins:${javaInstalls}" th:value="${ins.key()}" th:text="${ins.fullName()}"></option>
             </select>
         </div>
+        <div class="mb-3 form-check">
+            <input class="form-check-input" type="checkbox" value="true" id="verbose" name="verbose">
+            <label class="form-check-label" for="verbose">
+                Disassembles Verbose
+            </label>
+        </div>
         <div class="mb-3">
             <label for="mainClass" class="form-label">Main Class</label>
             <input type="text" class="form-control" id="mainClass" name="mainClass">

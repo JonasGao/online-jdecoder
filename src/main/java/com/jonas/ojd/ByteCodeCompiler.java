@@ -13,7 +13,8 @@ import java.nio.file.Paths;
 @Slf4j
 public class ByteCodeCompiler {
 
-    public String compile(JavaInstall javaInstall, TempJavaFile tempJavaFile) throws IOException, InterruptedException {
+    public String compile(JavaInstall javaInstall, TempJavaFile tempJavaFile, boolean verbose)
+            throws IOException, InterruptedException {
         JavaBin javaBin = new JavaBin(javaInstall);
         try {
             int i;
@@ -22,7 +23,7 @@ public class ByteCodeCompiler {
             i = javaBin.compile(tempJavaFile);
             log.info("Compile return: {}", i);
             ByteCodeOutput output = new ByteCodeOutput();
-            i = javaBin.disassembles(tempJavaFile, output);
+            i = javaBin.disassembles(tempJavaFile, output, verbose);
             log.info("Disassembles return: {}", i);
             return output.getByteCode();
         } finally {

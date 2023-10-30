@@ -12,6 +12,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.LinkedList;
+import java.util.List;
 
 @Data
 public class JavaBin {
@@ -38,8 +40,15 @@ public class JavaBin {
         return start.waitFor();
     }
 
-    public int disassembles(TempJavaFile javaFile, ByteCodeOutput byteCodeOutput) throws IOException, InterruptedException {
-        Process start = new ProcessBuilder(javap.toString(), "-c", javaFile.getClassFilePathString())
+    public int disassembles(TempJavaFile javaFile, ByteCodeOutput byteCodeOutput, boolean verbose) throws IOException, InterruptedException {
+        List<String> command = new LinkedList<>();
+        command.add(javap.toString());
+        if (verbose) {
+            command.add("-verbose");
+        }
+        command.add("-c");
+        command.add(javaFile.getClassFilePathString());
+        Process start = new ProcessBuilder(command)
                 .start();
         try (InputStream in = start.getInputStream();
              ByteArrayOutputStream result = new ByteArrayOutputStream()) {
