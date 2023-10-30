@@ -5,6 +5,7 @@ import lombok.Data;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -30,8 +31,10 @@ public class JavaBin {
     }
 
     public int compile(TempJavaFile javaFile, CommandOutput compileOutput) throws IOException, InterruptedException {
-        Process start = new ProcessBuilder(javac.toString(), javaFile.getFilePathString())
-                .start();
+        ProcessBuilder processBuilder = new ProcessBuilder(javac.toString(),
+                "-J-Dfile.encoding=UTF-8",
+                javaFile.getFilePathString());
+        Process start = processBuilder.start();
         try (InputStream in = start.getInputStream();
              InputStream es = start.getErrorStream();
              ByteArrayOutputStream ir = new ByteArrayOutputStream();
@@ -44,9 +47,10 @@ public class JavaBin {
             for (int length; (length = es.read(eb)) != -1; ) {
                 er.write(eb, 0, length);
             }
+            Charset charset = StandardCharsets.UTF_8;
             compileOutput.setOutput(
-                    ir.toString(StandardCharsets.UTF_8),
-                    er.toString(StandardCharsets.UTF_8));
+                    ir.toString(charset),
+                    er.toString(charset));
             return start.waitFor();
         }
     }
