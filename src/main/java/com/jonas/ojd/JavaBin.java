@@ -61,6 +61,7 @@ public class JavaBin {
         if (verbose) {
             command.add("-verbose");
         }
+        command.add("-J-Dfile.encoding=UTF-8");
         command.add("-c");
         command.add(javaFile.getClassFilePathString());
         Process start = new ProcessBuilder(command)
