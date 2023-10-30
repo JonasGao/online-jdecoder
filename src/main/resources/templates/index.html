@@ -69,6 +69,7 @@
   window.addEventListener("load", () => {
     let form = document.forms["compile"];
     form.javaInstallSelect.value = localStorage.getItem("form_javaInstallSelect_value");
+    form.verbose.checked = localStorage.getItem("form_verbose_value") === "true";
     form.mainClass.value = localStorage.getItem("form_mainClass_value");
     form.javaCode.value = localStorage.getItem("form_javaCode_value");
     editor.setValue(form.javaCode.value);
@@ -77,6 +78,7 @@
   function saveForm() {
     let form = document.forms["compile"];
     localStorage.setItem("form_javaInstallSelect_value", form.javaInstallSelect.value);
+    localStorage.setItem("form_verbose_value", form.verbose.checked);
     localStorage.setItem("form_mainClass_value", form.mainClass.value);
     form.javaCode.value = editor.getValue();
     localStorage.setItem("form_javaCode_value", form.javaCode.value);
