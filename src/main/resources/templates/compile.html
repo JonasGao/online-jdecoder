@@ -5,12 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>JDecoder</title>
     <link href="/static/bootstrap.min.css" rel="stylesheet"/>
-    <style>
-        #editor {
-            width: 100%;
-            height: 100%;
-        }
-    </style>
 </head>
 <body>
 <div class="container">
@@ -27,7 +21,7 @@
     </header>
     <div class="row">
         <div class="col">
-            <div id="editor" th:text="${code}"></div>
+            <pre><code th:text="${code}"></code></pre>
         </div>
         <div class="col">
             <pre><code th:text="${output.printOutput()}"></code></pre>
@@ -35,14 +29,5 @@
     </div>
 </div>
 <script src="/static/bootstrap.bundle.min.js"></script>
-<script src="/static/ace.js" type="text/javascript" charset="utf-8"></script>
-<script>
-  const editor = ace.edit("editor", {
-    mode: "ace/mode/java",
-    selectionStyle: "text"
-  });
-  editor.setTheme("ace/theme/monokai");
-  editor.setReadOnly(true);
-</script>
 </body>
 </html>
