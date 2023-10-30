@@ -21,13 +21,13 @@ public class CompileController {
             throws IOException {
         TempJavaFile tempJavaFile = TempJavaFile.create(mainClass, javaCode);
         JavaInstall javaInstall = JavaInstalls.get(javaInstallSelect);
-        String bytecode;
+        CommandOutput output;
         try {
-            bytecode = byteCodeCompiler.compile(javaInstall, tempJavaFile, verbose);
+            output = byteCodeCompiler.compile(javaInstall, tempJavaFile, verbose);
         } catch (InterruptedException e) {
             return "interrupted";
         }
-        model.addAttribute("bytecode", bytecode);
+        model.addAttribute("output", output);
         model.addAttribute("code", javaCode);
         return "compile";
     }

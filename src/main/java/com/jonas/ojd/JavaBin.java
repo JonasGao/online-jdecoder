@@ -2,14 +2,10 @@ package com.jonas.ojd;
 
 import lombok.Data;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.LinkedList;
@@ -33,14 +29,29 @@ public class JavaBin {
         this.javap = bin.resolve(JAVAP);
     }
 
-    public int compile(TempJavaFile javaFile) throws IOException, InterruptedException {
+    public int compile(TempJavaFile javaFile, CommandOutput compileOutput) throws IOException, InterruptedException {
         Process start = new ProcessBuilder(javac.toString(), javaFile.getFilePathString())
-                .inheritIO()
                 .start();
-        return start.waitFor();
+        try (InputStream in = start.getInputStream();
+             InputStream es = start.getErrorStream();
+             ByteArrayOutputStream ir = new ByteArrayOutputStream();
+             ByteArrayOutputStream er = new ByteArrayOutputStream()) {
+            byte[] ib = new byte[1024];
+            byte[] eb = new byte[1024];
+            for (int length; (length = in.read(ib)) != -1; ) {
+                ir.write(ib, 0, length);
+            }
+            for (int length; (length = es.read(eb)) != -1; ) {
+                er.write(eb, 0, length);
+            }
+            compileOutput.setOutput(
+                    ir.toString(StandardCharsets.UTF_8),
+                    er.toString(StandardCharsets.UTF_8));
+            return start.waitFor();
+        }
     }
 
-    public int disassembles(TempJavaFile javaFile, ByteCodeOutput byteCodeOutput, boolean verbose) throws IOException, InterruptedException {
+    public int disassembles(TempJavaFile javaFile, CommandOutput byteCodeOutput, boolean verbose) throws IOException, InterruptedException {
         List<String> command = new LinkedList<>();
         command.add(javap.toString());
         if (verbose) {
@@ -56,7 +67,7 @@ public class JavaBin {
             for (int length; (length = in.read(buffer)) != -1; ) {
                 result.write(buffer, 0, length);
             }
-            byteCodeOutput.setByteCode(result.toString(StandardCharsets.UTF_8));
+            byteCodeOutput.setOutput(result.toString(StandardCharsets.UTF_8));
             return start.waitFor();
         }
     }

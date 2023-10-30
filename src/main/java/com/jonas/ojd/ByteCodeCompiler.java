@@ -4,28 +4,29 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.nio.file.FileAlreadyExistsException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 @Component
 @Slf4j
 public class ByteCodeCompiler {
 
-    public String compile(JavaInstall javaInstall, TempJavaFile tempJavaFile, boolean verbose)
+    public CommandOutput compile(JavaInstall javaInstall, TempJavaFile tempJavaFile, boolean verbose)
             throws IOException, InterruptedException {
         JavaBin javaBin = new JavaBin(javaInstall);
+        CommandOutput output = new CommandOutput();
         try {
             int i;
             String targetPathString = tempJavaFile.getFilePathString();
             log.info("Compile temp file: {}", targetPathString);
-            i = javaBin.compile(tempJavaFile);
+            i = javaBin.compile(tempJavaFile, output);
             log.info("Compile return: {}", i);
-            ByteCodeOutput output = new ByteCodeOutput();
+            if (i != 0) {
+                output.setExitValue(i);
+                return output;
+            }
             i = javaBin.disassembles(tempJavaFile, output, verbose);
             log.info("Disassembles return: {}", i);
-            return output.getByteCode();
+            output.setExitValue(i);
+            return output;
         } finally {
             tempJavaFile.remove();
         }
