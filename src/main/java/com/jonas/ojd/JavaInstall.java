@@ -6,7 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public record JavaInstall(String key, String name, String group, String path) {
+public record JavaInstall(int version, String key, String name, String group, String path) {
 
     public String fullName() {
         return String.format("%-10s - %s", group, name);

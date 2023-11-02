@@ -34,12 +34,20 @@ public class JavaInstalls {
         try {
             for (String confLine : confLines) {
                 String[] split = confLine.split(",");
-                if (split.length != 4) {
+                if (split.length != 5) {
                     throw new JavaInstallsException("解析配置文件失败: " + confLine);
                 }
-                JavaInstall javaInstall = new JavaInstall(split[0], split[1], split[2], split[3]);
+                String verStr = split[0];
+                String key = split[1];
+                int ver;
+                try {
+                    ver = Integer.parseInt(verStr);
+                } catch (NumberFormatException e) {
+                    throw new JavaInstallsException("第一个的版本字段只能是数字");
+                }
+                JavaInstall javaInstall = new JavaInstall(ver, key, split[2], split[3], split[4]);
                 javaInstall.validate();
-                JAVA_MAP.put(split[0], javaInstall);
+                JAVA_MAP.put(key, javaInstall);
             }
         } catch (JavaInstallsException je) {
             throw je;

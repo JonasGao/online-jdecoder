@@ -30,9 +30,13 @@ public class JavaBin {
         this.javap = bin.resolve(JAVAP);
     }
 
-    public int compile(TempJavaFile javaFile, CommandOutput compileOutput) throws IOException, InterruptedException {
+    public int compile(TempJavaFile javaFile, int sourceVersion, CommandOutput compileOutput)
+            throws IOException, InterruptedException {
+        String verStr = String.valueOf(sourceVersion);
         ProcessBuilder processBuilder = new ProcessBuilder(javac.toString(),
                 "-J-Dfile.encoding=UTF-8",
+                "-source", verStr,
+                "-target", verStr,
                 javaFile.getFilePathString());
         Process start = processBuilder.start();
         try (InputStream in = start.getInputStream();

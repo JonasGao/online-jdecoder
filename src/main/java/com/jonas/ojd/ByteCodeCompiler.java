@@ -9,7 +9,8 @@ import java.io.IOException;
 @Slf4j
 public class ByteCodeCompiler {
 
-    public CommandOutput compile(JavaInstall javaInstall, TempJavaFile tempJavaFile, boolean verbose)
+    public CommandOutput compile(JavaInstall javaInstall, TempJavaFile tempJavaFile, int sourceVersion,
+                                 boolean verbose)
             throws IOException, InterruptedException {
         JavaBin javaBin = new JavaBin(javaInstall);
         CommandOutput output = new CommandOutput();
@@ -17,7 +18,7 @@ public class ByteCodeCompiler {
             int i;
             String targetPathString = tempJavaFile.getFilePathString();
             log.info("Compile temp file: {}", targetPathString);
-            i = javaBin.compile(tempJavaFile, output);
+            i = javaBin.compile(tempJavaFile, sourceVersion, output);
             log.info("Compile return: {}", i);
             if (i != 0) {
                 output.setExitValue(i);

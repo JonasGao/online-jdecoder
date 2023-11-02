@@ -16,14 +16,14 @@ public class CompileController {
 
     @PostMapping("/compile")
     public String compile(@RequestParam String javaInstallSelect, @RequestParam String mainClass,
-                          @RequestParam String javaCode,
+                          @RequestParam String javaCode, @RequestParam Integer sourceVersion,
                           @RequestParam(required = false, defaultValue = "false") boolean verbose, Model model)
             throws IOException {
         TempJavaFile tempJavaFile = TempJavaFile.create(mainClass, javaCode);
         JavaInstall javaInstall = JavaInstalls.get(javaInstallSelect);
         CommandOutput output;
         try {
-            output = byteCodeCompiler.compile(javaInstall, tempJavaFile, verbose);
+            output = byteCodeCompiler.compile(javaInstall, tempJavaFile, sourceVersion, verbose);
         } catch (InterruptedException e) {
             return "interrupted";
         }

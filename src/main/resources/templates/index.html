@@ -7,6 +7,7 @@
     <link href="/static/bootstrap.min.css" rel="stylesheet"/>
     <style>
         #javaInstallSelect,
+        #sourceVersion,
         #mainClass,
         #javaCode {
             font-family: monospace;
@@ -32,12 +33,24 @@
         </a>
     </header>
     <form action="/compile" method="post" name="compile">
-        <div class="mb-3">
-            <label for="javaInstallSelect" class="form-label">Java Installation</label>
-            <select class="form-select" aria-label="Java Install Select" id="javaInstallSelect"
-                    name="javaInstallSelect">
-                <option th:each="ins:${javaInstalls}" th:value="${ins.key()}" th:text="${ins.fullName()}"></option>
-            </select>
+        <div class="row">
+            <div class="col-6">
+                <label for="javaInstallSelect" class="form-label">Java Installation</label>
+                <select class="form-select" aria-label="Java Install Select" id="javaInstallSelect"
+                        name="javaInstallSelect" onchange="changeVersionSource()">
+                    <option th:each="ins:${javaInstalls}"
+                            th:value="${ins.key()}"
+                            th:text="${ins.fullName()}"
+                            th:ver="${ins.version()}"
+                    ></option>
+                </select>
+            </div>
+            <div class="col-6">
+                <label for="sourceVersion" class="form-label">Source & Target Version</label>
+                <select class="form-select" aria-label="Java Install Select" id="sourceVersion"
+                        name="sourceVersion">
+                </select>
+            </div>
         </div>
         <div class="mb-3 form-check">
             <input class="form-check-input" type="checkbox" value="true" id="verbose" name="verbose">
@@ -66,23 +79,47 @@
   });
   editor.setTheme("ace/theme/monokai");
 
-  window.addEventListener("load", () => {
-    let form = document.forms["compile"];
-    form.javaInstallSelect.value = localStorage.getItem("form_javaInstallSelect_value");
-    form.verbose.checked = localStorage.getItem("form_verbose_value") === "true";
-    form.mainClass.value = localStorage.getItem("form_mainClass_value");
-    form.javaCode.value = localStorage.getItem("form_javaCode_value");
-    editor.setValue(form.javaCode.value);
-  })
-
   function saveForm() {
-    let form = document.forms["compile"];
+    const form = document.forms["compile"];
     localStorage.setItem("form_javaInstallSelect_value", form.javaInstallSelect.value);
     localStorage.setItem("form_verbose_value", form.verbose.checked);
     localStorage.setItem("form_mainClass_value", form.mainClass.value);
     form.javaCode.value = editor.getValue();
     localStorage.setItem("form_javaCode_value", form.javaCode.value);
   }
+
+  function loadForm() {
+    const form = document.forms["compile"];
+    form.javaInstallSelect.value = localStorage.getItem("form_javaInstallSelect_value");
+    form.verbose.checked = localStorage.getItem("form_verbose_value") === "true";
+    form.mainClass.value = localStorage.getItem("form_mainClass_value");
+    form.javaCode.value = localStorage.getItem("form_javaCode_value");
+    editor.setValue(form.javaCode.value);
+  }
+
+  function changeVersionSource() {
+    const form = document.forms["compile"];
+    const selectedOption = form.javaInstallSelect.selectedOptions[0];
+    const verSelect = form.sourceVersion;
+    const verAttr = selectedOption.attributes["ver"];
+    let ver = parseInt(verAttr.value);
+    let verOpt = verSelect.lastElementChild;
+    while (verOpt) {
+      verSelect.removeChild(verOpt);
+      verOpt = verSelect.lastElementChild;
+    }
+    for (; 8 <= ver; ver--) {
+      const option = document.createElement("option");
+      option.setAttribute("value", ver);
+      option.innerHTML = ver;
+      verSelect.appendChild(option);
+    }
+  }
+
+  window.addEventListener("load", () => {
+    loadForm();
+    changeVersionSource();
+  })
 </script>
 </body>
 </html>
