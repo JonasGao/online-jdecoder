@@ -18,6 +18,6 @@ public record JavaInstall(int version, String key, String name, String group, St
         Assert.hasText(group, "JavaInstall 配置缺少 Group");
         Assert.hasText(path, "JavaInstall 配置缺少 Path");
         Path path = Paths.get(this.path).resolve("bin");
-        Assert.state(Files.exists(path), "JavaInstall 配置的 Path 不合法，目录不存在或缺少 bin 目录");
+        Assert.state(Files.exists(path), "JavaInstall 配置的 Path(" + this.path + ") 不合法，目录不存在或缺少 bin 目录");
     }
 }

@@ -35,21 +35,44 @@
     <form action="/compile" method="post" name="compile">
         <div class="row">
             <div class="col-6">
-                <label for="javaInstallSelect" class="form-label">Java Installation</label>
-                <select class="form-select" aria-label="Java Install Select" id="javaInstallSelect"
-                        name="javaInstallSelect" onchange="changeVersionSource()">
-                    <option th:each="ins:${javaInstalls}"
-                            th:value="${ins.key()}"
-                            th:text="${ins.fullName()}"
-                            th:ver="${ins.version()}"
-                    ></option>
-                </select>
+                <label class="form-label">Java Installation</label>
             </div>
             <div class="col-6">
-                <label for="sourceVersion" class="form-label">Source & Target Version</label>
-                <select class="form-select" aria-label="Java Install Select" id="sourceVersion"
-                        name="sourceVersion">
-                </select>
+                <label class="form-label">Source & Target Version</label>
+            </div>
+        </div>
+        <div id="jrow-container">
+            <div class="mb-3 row" id="jrow">
+                <div class="col-6">
+                    <select class="form-select" aria-label="Java Install Select" id="javaInstallSelect"
+                            name="javaInstallSelect" onchange="changeVersionSource(this)">
+                        <option th:each="ins:${javaInstalls}"
+                                th:value="${ins.key()}"
+                                th:text="${ins.fullName()}"
+                                th:ver="${ins.version()}"
+                        ></option>
+                    </select>
+                </div>
+                <div class="col-5">
+                    <select class="form-select" aria-label="Java Install Select" id="sourceVersion"
+                            name="sourceVersion">
+                    </select>
+                </div>
+                <div class="col-1">
+                    <div class="d-grid">
+                        <button type="button" class="btn btn-danger" onclick="remove(this)">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                 class="bi bi-trash3" viewBox="0 0 16 16">
+                                <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="mb-3 row">
+            <div class="d-grid">
+                <button type="button" class="btn btn-secondary btn-sm" onclick="add()">Add Installation Select</button>
             </div>
         </div>
         <div class="mb-3 form-check">
@@ -67,59 +90,78 @@
             <textarea class="form-control" id="javaCode" name="javaCode" rows="18" hidden="hidden"></textarea>
             <div id="editor"></div>
         </div>
-        <button type="submit" class="btn btn-primary" onclick="saveForm()">Submit</button>
+        <button type="submit" class="btn btn-primary" onclick="saveAndSubmitForm()">Submit</button>
     </form>
 </div>
 <script src="/static/bootstrap.bundle.min.js"></script>
 <script src="/static/ace.js" type="text/javascript" charset="utf-8"></script>
 <script>
-  const editor = ace.edit("editor", {
-    mode: "ace/mode/java",
-    selectionStyle: "text"
-  });
-  editor.setTheme("ace/theme/monokai");
+    const editor = ace.edit("editor", {
+        mode: "ace/mode/java",
+        selectionStyle: "text"
+    });
+    editor.setTheme("ace/theme/monokai");
 
-  function saveForm() {
-    const form = document.forms["compile"];
-    localStorage.setItem("form_javaInstallSelect_value", form.javaInstallSelect.value);
-    localStorage.setItem("form_verbose_value", form.verbose.checked);
-    localStorage.setItem("form_mainClass_value", form.mainClass.value);
-    form.javaCode.value = editor.getValue();
-    localStorage.setItem("form_javaCode_value", form.javaCode.value);
-  }
-
-  function loadForm() {
-    const form = document.forms["compile"];
-    form.javaInstallSelect.value = localStorage.getItem("form_javaInstallSelect_value");
-    form.verbose.checked = localStorage.getItem("form_verbose_value") === "true";
-    form.mainClass.value = localStorage.getItem("form_mainClass_value");
-    form.javaCode.value = localStorage.getItem("form_javaCode_value");
-    editor.setValue(form.javaCode.value);
-  }
-
-  function changeVersionSource() {
-    const form = document.forms["compile"];
-    const selectedOption = form.javaInstallSelect.selectedOptions[0];
-    const verSelect = form.sourceVersion;
-    const verAttr = selectedOption.attributes["ver"];
-    let ver = parseInt(verAttr.value);
-    let verOpt = verSelect.lastElementChild;
-    while (verOpt) {
-      verSelect.removeChild(verOpt);
-      verOpt = verSelect.lastElementChild;
+    function saveAndSubmitForm() {
+        const form = document.forms["compile"];
+        localStorage.setItem("form_javaInstallSelect_value", form.javaInstallSelect.value);
+        localStorage.setItem("form_verbose_value", form.verbose.checked);
+        localStorage.setItem("form_mainClass_value", form.mainClass.value);
+        form.javaCode.value = editor.getValue();
+        localStorage.setItem("form_javaCode_value", form.javaCode.value);
+        return false;
     }
-    for (; 8 <= ver; ver--) {
-      const option = document.createElement("option");
-      option.setAttribute("value", ver);
-      option.innerHTML = ver;
-      verSelect.appendChild(option);
-    }
-  }
 
-  window.addEventListener("load", () => {
-    loadForm();
-    changeVersionSource();
-  })
+    function loadForm() {
+        const form = document.forms["compile"];
+        form.javaInstallSelect.value = localStorage.getItem("form_javaInstallSelect_value");
+        form.verbose.checked = localStorage.getItem("form_verbose_value") === "true";
+        form.mainClass.value = localStorage.getItem("form_mainClass_value");
+        form.javaCode.value = localStorage.getItem("form_javaCode_value");
+        editor.setValue(form.javaCode.value);
+    }
+
+    function add() {
+        if (document.getElementById('jrow-container').children.length >= 3) {
+            alert("You can't add more than 3 installations.");
+            return;
+        }
+        const node = document.getElementById('jrow').cloneNode(true);
+        document.getElementById('jrow-container').appendChild(node);
+        changeVersionSource(node.firstElementChild.firstElementChild)
+    }
+
+    function remove(elem) {
+        if (document.getElementById('jrow-container').children.length <= 1) {
+            alert("You can't remove the last installation.");
+            return;
+        }
+        elem.parentNode.parentNode.parentNode.remove();
+    }
+
+    function changeVersionSource(elem) {
+        const selectedOption = elem.selectedOptions[0];
+        const verSelect = elem.parentNode.nextElementSibling.firstElementChild;
+        const verAttr = selectedOption.attributes["ver"];
+        let ver = parseInt(verAttr.value);
+        let verOpt = verSelect.lastElementChild;
+        while (verOpt) {
+            verSelect.removeChild(verOpt);
+            verOpt = verSelect.lastElementChild;
+        }
+        for (; 8 <= ver; ver--) {
+            const option = document.createElement("option");
+            option.setAttribute("value", ver);
+            option.innerHTML = ver;
+            verSelect.appendChild(option);
+        }
+    }
+
+    window.addEventListener("load", () => {
+        const form = document.forms["compile"];
+        loadForm();
+        changeVersionSource(form.javaInstallSelect);
+    })
 </script>
 </body>
 </html>
